@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Home - EduPlatform{% endblock %}
+{% block content %}
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Start Your Learning Journey</h1>
+                <p class="lead mb-4">Quality courses from expert instructors. Learn anytime, anywhere.</p>
+                <a href="{{ url_for('courses') }}" class="btn btn-light btn-lg me-3"><i class="bi bi-play-circle me-2"></i>Browse Courses</a>
+                {% if not session.user_id %}<a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg">Free Sign Up</a>{% endif %}
+            </div>
+            <div class="col-lg-6 text-center"><div class="display-1"><i class="bi bi-laptop"></i><i class="bi bi-book ms-3"></i><i class="bi bi-trophy ms-3"></i></div></div>
+        </div>
+    </div>
+</section>
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3"><h2 class="text-primary fw-bold">10+</h2><p class="text-muted mb-0">Courses</p></div>
+            <div class="col-md-3"><h2 class="text-primary fw-bold">5+</h2><p class="text-muted mb-0">Instructors</p></div>
+            <div class="col-md-3"><h2 class="text-primary fw-bold">8000+</h2><p class="text-muted mb-0">Students</p></div>
+            <div class="col-md-3"><h2 class="text-primary fw-bold">98%</h2><p class="text-muted mb-0">Satisfaction</p></div>
+        </div>
+    </div>
+</section>
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0"><i class="bi bi-star-fill text-warning me-2"></i>Featured Courses</h2>
+            <a href="{{ url_for('courses') }}" class="btn btn-outline-primary">View All <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="row g-4">
+            {% for course in featured_courses %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 course-card shadow-sm">
+                    <div class="card-img-top bg-gradient text-white d-flex align-items-center justify-content-center" style="height:150px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);"><i class="bi bi-play-circle display-3"></i></div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-info">{{ course['category_name'] or 'General' }}</span>
+                            <span class="badge bg-secondary">{{ course['level'] }}</span>
+                        </div>
+                        <h5 class="card-title">{{ course['title'] }}</h5>
+                        <p class="card-text text-muted small">{{ course['subtitle'] }}</p>
+                        <div class="d-flex align-items-center"><i class="bi bi-person-circle text-muted me-1"></i><small class="text-muted">{{ course['instructor_name'] }}</small></div>
+                        <div class="d-flex align-items-center mt-2">
+                            <div class="text-warning me-2">{% for i in range(5) %}<i class="bi bi-star{% if i < course['rating_avg']|int %}-fill{% endif %}"></i>{% endfor %}</div>
+                            <small class="text-muted">{{ course['rating_avg'] }} ({{ course['rating_count'] }})</small>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            {% if course['price'] == 0 %}<span class="text-success fw-bold">Free</span>{% else %}<span class="text-danger fw-bold fs-5">${{ course['price'] }}</span>{% endif %}
+                            <a href="{{ url_for('course_detail', course_id=course['course_id']) }}" class="btn btn-primary btn-sm">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="fw-bold text-center mb-4"><i class="bi bi-grid-fill text-primary me-2"></i>Categories</h2>
+        <div class="row g-4">
+            {% for category in categories %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ url_for('courses', category=category['category_id']) }}" class="text-decoration-none">
+                    <div class="card text-center p-4 h-100 category-card"><i class="bi bi-folder2-open display-4 text-primary mb-3"></i><h5 class="card-title">{{ category['category_name'] }}</h5></div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

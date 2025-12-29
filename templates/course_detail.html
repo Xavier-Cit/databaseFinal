@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}{{ course['title'] }} - EduPlatform{% endblock %}
+{% block content %}
+<section class="bg-dark text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-white-50">Home</a></li><li class="breadcrumb-item"><a href="{{ url_for('courses') }}" class="text-white-50">Courses</a></li><li class="breadcrumb-item active text-white">{{ course['title'] }}</li></ol></nav>
+                <h1 class="display-5 fw-bold">{{ course['title'] }}</h1>
+                <p class="lead">{{ course['subtitle'] }}</p>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="text-warning me-2">{% for i in range(5) %}<i class="bi bi-star{% if i < course['rating_avg']|int %}-fill{% endif %}"></i>{% endfor %}</div>
+                    <span class="me-3">{{ course['rating_avg'] }} ({{ course['rating_count'] }} reviews)</span>
+                    <span><i class="bi bi-people me-1"></i>{{ course['enrollment_count'] }} students</span>
+                </div>
+                <p><i class="bi bi-person-circle me-1"></i>Instructor: <strong>{{ course['instructor_name'] }}</strong></p>
+                <span class="badge bg-info me-2">{{ course['category_name'] }}</span>
+                <span class="badge bg-{{ 'success' if course['level'] == 'beginner' else 'warning' if course['level'] == 'intermediate' else 'danger' }}">{{ course['level'] }}</span>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body text-center text-dark p-4">
+                        <div class="mb-3">{% if course['price'] == 0 %}<span class="display-4 fw-bold text-success">Free</span>{% else %}<span class="display-4 fw-bold text-danger">${{ course['price'] }}</span>{% endif %}</div>
+                        {% if is_enrolled %}
+                        <a href="{{ url_for('learn', course_id=course['course_id']) }}" class="btn btn-success btn-lg w-100 mb-2"><i class="bi bi-play-circle me-2"></i>Continue Learning</a>
+                        {% else %}
+                        <form action="{{ url_for('enroll_course', course_id=course['course_id']) }}" method="POST"><button type="submit" class="btn btn-primary btn-lg w-100 mb-2"><i class="bi bi-cart-plus me-2"></i>{{ 'Enroll Free' if course['price'] == 0 else 'Buy Now' }}</button></form>
+                        {% endif %}
+                        <form action="{{ url_for('toggle_favorite', course_id=course['course_id']) }}" method="POST"><button type="submit" class="btn btn-outline-{{ 'danger' if is_favorited else 'secondary' }} w-100"><i class="bi bi-heart{% if is_favorited %}-fill{% endif %} me-2"></i>{{ 'Saved' if is_favorited else 'Save' }}</button></form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white"><h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Description</h5></div>
+                    <div class="card-body"><p>{{ course['description'] }}</p></div>
+                </div>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white"><h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Curriculum</h5></div>
+                    <div class="card-body p-0">
+                        <div class="accordion" id="curriculum">
+                            {% for item in chapters %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header"><button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#ch{{ loop.index }}"><span class="badge bg-primary me-2">{{ loop.index }}</span>{{ item.chapter['title'] }}<span class="badge bg-secondary ms-auto me-3">{{ item.lessons|length }} lessons</span></button></h2>
+                                <div id="ch{{ loop.index }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}">
+                                    <ul class="list-group list-group-flush">
+                                        {% for lesson in item.lessons %}
+                                        <li class="list-group-item d-flex justify-content-between"><span><i class="bi bi-play-circle text-primary me-2"></i>{{ lesson['title'] }}{% if lesson['is_free'] %}<span class="badge bg-success ms-2">Preview</span>{% endif %}</span><small class="text-muted">{{ (lesson['video_duration'] // 60)|int }}:{{ '%02d' % (lesson['video_duration'] % 60) }}</small></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white"><h5 class="mb-0"><i class="bi bi-chat-dots me-2"></i>Reviews</h5></div>
+                    <div class="card-body">
+                        {% if reviews %}{% for review in reviews %}
+                        <div class="border-bottom pb-3 mb-3">
+                            <div class="d-flex justify-content-between mb-2"><div><strong>{{ review['username'] }}</strong><div class="text-warning small">{% for i in range(review['rating']) %}<i class="bi bi-star-fill"></i>{% endfor %}</div></div><small class="text-muted">{{ review['created_at'][:10] }}</small></div>
+                            <p class="mb-0">{{ review['content'] }}</p>
+                        </div>
+                        {% endfor %}{% else %}<p class="text-center text-muted py-3">No reviews yet</p>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white"><h5 class="mb-0"><i class="bi bi-bookmark me-2"></i>Course Info</h5></div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between"><span>Level</span><span class="badge bg-primary">{{ course['level'] }}</span></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Duration</span><span>{{ course['duration_hours'] }}h</span></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Students</span><span>{{ course['enrollment_count'] }}</span></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Rating</span><span class="text-warning">{{ course['rating_avg'] }}<i class="bi bi-star-fill ms-1"></i></span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

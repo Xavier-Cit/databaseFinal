@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Login - EduPlatform{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-person-circle display-4 text-primary"></i>
+                        <h3 class="mt-3">Welcome Back</h3>
+                        <p class="text-muted">Please login to your account</p>
+                    </div>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <div class="input-group"><span class="input-group-text"><i class="bi bi-envelope"></i></span><input type="email" class="form-control" name="email" required placeholder="Enter email"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <div class="input-group"><span class="input-group-text"><i class="bi bi-lock"></i></span><input type="password" class="form-control" name="password" required placeholder="Enter password"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3"><i class="bi bi-box-arrow-in-right me-2"></i>Login</button>
+                    </form>
+                    <hr>
+                    <div class="text-center">
+                        <p class="mb-2">Don't have an account? <a href="{{ url_for('register') }}">Sign Up</a></p>
+                        <small class="text-muted">Test: zhangsan@example.com / password123</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+/* 在线学习平台样式 */
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+.course-card { transition: transform 0.2s, box-shadow 0.2s; }
+.course-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+.category-card { transition: all 0.2s; border: 2px solid transparent; }
+.category-card:hover { border-color: #0d6efd; background-color: #f8f9fa; }
+.navbar-brand { font-size: 1.4rem; }
+.progress { background-color: #e9ecef; }
+.accordion-button:not(.collapsed) { background-color: #e7f1ff; color: #0c63e4; }
+pre code { font-size: 0.85rem; }
+footer a { text-decoration: none; }
+footer a:hover { text-decoration: underline; }

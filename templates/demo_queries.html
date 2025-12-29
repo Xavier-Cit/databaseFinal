@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}SQL Query Demo - EduPlatform{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4"><i class="bi bi-database me-2"></i>SQL Complex Query Demo</h2>
+    <p class="text-muted mb-4">This page demonstrates various SQL query types implemented in the project.</p>
+    {% for key, query in queries.items() %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ loop.index }}. {{ query.title }}</h5></div>
+        <div class="card-body">
+            <pre class="bg-dark text-success p-3 rounded"><code>{{ query.sql }}</code></pre>
+            <h6 class="mt-3">Results:</h6>
+            {% if query.result %}
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered table-striped">
+                    <thead class="table-dark"><tr>{% for col in query.result[0].keys() %}<th>{{ col }}</th>{% endfor %}</tr></thead>
+                    <tbody>{% for row in query.result %}<tr>{% for val in row %}<td>{{ val if val is not none else '-' }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+                </table>
+            </div>
+            {% else %}<p class="text-muted">No results</p>{% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    <div class="card bg-light">
+        <div class="card-body">
+            <h5>Query Types</h5>
+            <ul class="mb-0">
+                <li><strong>Single Table</strong>: Basic SELECT query</li>
+                <li><strong>Inner Join</strong>: INNER JOIN multi-table</li>
+                <li><strong>Left Outer Join</strong>: LEFT JOIN including NULL</li>
+                <li><strong>Self Join</strong>: Table joins itself (category hierarchy)</li>
+                <li><strong>Aggregate</strong>: COUNT/SUM/AVG + GROUP BY</li>
+                <li><strong>Date Functions</strong>: DATE() processing</li>
+                <li><strong>Subquery</strong>: Nested SELECT in WHERE</li>
+                <li><strong>Correlated Subquery</strong>: References outer table</li>
+                <li><strong>UNION</strong>: Combine query results</li>
+                <li><strong>Multi-table Join</strong>: 5+ table complex join</li>
+                <li><strong>Division Query</strong>: Find records meeting all conditions</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
